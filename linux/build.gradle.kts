@@ -9,6 +9,7 @@ android {
     defaultConfig {
         minSdk = 21
         consumerProguardFiles("consumer-rules.pro")
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -39,4 +40,9 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.truth)
+
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation("androidx.test:runner:1.6.2")
+    androidTestImplementation(libs.truth)
+    androidTestImplementation("org.apache.commons:commons-compress:1.27.1")
 }

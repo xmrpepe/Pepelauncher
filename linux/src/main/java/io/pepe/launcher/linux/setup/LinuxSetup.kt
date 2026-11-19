@@ -60,7 +60,8 @@ class LinuxSetup(
 
     // ---- download + extract ----
 
-    private fun install(listener: Listener) {
+    /** Download + extract only (no guest commands); used directly by the instrumented smoke test. */
+    fun install(listener: Listener) {
         downloadDir.mkdirs()
         val usable = downloadDir.usableSpace
         if (usable in 1 until MIN_FREE_BYTES) {

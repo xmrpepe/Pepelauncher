@@ -1,3 +1,27 @@
+# pepelauncher
+
+**pepelauncher** is a fork of [mako](https://github.com/rama-io/mako) that adds a full
+**Arch Linux ARM** system, run in proot without root:
+
+- **Swipe right** on the home screen for a full-screen Linux terminal (tabs, extra keys,
+  pinch zoom, copy/paste). Sessions keep running in a foreground service.
+- A **Linux section** in the app list: installing a package with `pacman` adds its `.desktop`
+  entries automatically, and removing the package removes them. Long-press for Favorites, a
+  home-screen shortcut, package info or uninstall.
+- Linux settings for the mirror, shell, `/sdcard` binding, reinstall/remove, and
+  `tar.zst` backup and restore.
+- Planned: a Wayland compositor that gives every Linux window its own Android task and Recents
+  card, with Xwayland for X11 apps.
+
+Two builds: `linux` (pepelauncher) and `plain` (exactly mako: no network permission, no native
+code). See [docs/BUILDING.md](docs/BUILDING.md) to build, and [NOTICE](NOTICE) for credits.
+Upstream changes are listed in [docs/UPSTREAM_PATCHES.md](docs/UPSTREAM_PATCHES.md).
+
+The `linux` build needs the network to download Arch Linux ARM and packages. Everything below
+describes upstream mako.
+
+---
+
 ![Preview](./docs/img/mako_header_1200x630.svg)
 ![Badge](https://rama-io.github.io/img/badge_mako.svg)
 

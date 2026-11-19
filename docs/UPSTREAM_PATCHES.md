@@ -22,6 +22,7 @@ Then re-check every hook below against the new upstream code.
 | `app/src/main/java/com/rama/mako/activities/SettingsActivity.kt` | Linux settings entry | `onCreate` ends with `LinuxHooks.onSettingsCreated(this)`, which inserts a "Linux settings" button (bohio `BTN2`) under the title programmatically, so `view_settings.xml` stays untouched; one import. |
 | `app/src/main/java/com/rama/mako/managers/AppsProvider.kt` | Linux section | `getAll()` appends `LinuxHooks.entries(context)`; `launch()`, `getIcon()`, `getAppSizeBytes()` and `appCacheKey()` get a `LinuxEntry` branch in their `when`; `getIcon()` returns Linux icons before mako's per-instance icon cache (they render asynchronously); one import. Marked `// pepelauncher`. |
 | `app/src/main/java/com/rama/mako/managers/AppListManager.kt` | Linux long-press actions | `openAppSettings()` gets `is LinuxEntry -> LinuxHooks.showActions(...)`; `renderAppInfo()` treats `LinuxEntry` like `ShortcutEntry` (no API/size row); one import. |
+| `readme.md` | Project description | A pepelauncher header (features, build variants, links) prepended; mako's text is unchanged below it. |
 | `app/src/debug/res/values/strings.xml` | Rename | Debug `app_name` "Mako Dev" → "pepelauncher Dev" (a build-type resource outranks the flavor's `app_name`). |
 
 ## New files inside upstream packages
