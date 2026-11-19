@@ -101,6 +101,7 @@ class ProotRunnerTest {
         assertThat(env).containsEntry("QT_QPA_PLATFORM", "wayland;xcb")
         assertThat(env).containsEntry("SDL_VIDEODRIVER", "wayland")
         assertThat(env).containsEntry("MOZ_ENABLE_WAYLAND", "1")
+        assertThat(env).containsEntry("GLYCIN_DISABLE_SANDBOX", "i-know-the-risks")
         assertThat(env["PATH"]).contains("/usr/bin")
     }
 

@@ -80,6 +80,10 @@ object ProotRunner {
         "QT_QPA_PLATFORM" to "wayland;xcb",
         "SDL_VIDEODRIVER" to "wayland",
         "MOZ_ENABLE_WAYLAND" to "1",
+        // GTK's image loader (glycin) sandboxes decoders with bwrap, which needs user namespaces:
+        // impossible under proot, and GTK apps abort on their first icon without this. glycin only
+        // accepts this exact value.
+        "GLYCIN_DISABLE_SANDBOX" to "i-know-the-risks",
     )
 
     fun build(
