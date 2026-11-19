@@ -16,6 +16,10 @@ import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import com.termux.terminal.TerminalSession
 import com.termux.terminal.TerminalSessionClient
+import android.util.Log
+import io.pepe.launcher.linux.apps.DesktopEntryParser
+import io.pepe.launcher.linux.apps.LinuxApps
+import java.io.File
 import io.pepe.launcher.linux.Linux
 import io.pepe.launcher.linux.LinuxPaths
 import io.pepe.launcher.linux.LinuxSettings
@@ -63,6 +67,14 @@ class LinuxService : Service() {
         goForeground()
         when (intent?.action) {
             ACTION_SETUP -> startSetup()
+            ACTION_LAUNCH -> intent.getStringExtra(EXTRA_APP_ID)?.let(::launchApp)
+            ACTION_EXPORT -> intent.data?.let { uri -> runJob(getString(R.string.pepe_job_export)) { exportTo(uri) } }
+            ACTION_IMPORT -> intent.data?.let { uri -> runJob(getString(R.string.pepe_job_import)) { importFrom(uri) } }
+            ACTION_RESET -> runJob(getString(R.string.pepe_job_reset)) { resetRootfs() }
+            ACTION_REINSTALL -> runJob(getString(R.string.pepe_job_reset)) {
+                resetRootfs()
+                ContextCompat.getMainExecutor(this).execute { startSetup() }
+            }
             ACTION_STOP -> {
                 stopEverything()
                 return START_NOT_STICKY
@@ -109,12 +121,117 @@ class LinuxService : Service() {
         setup?.cancel()
     }
 
+    // ---- jobs: backup, restore, reset ----
+
+    @Volatile
+    private var job: Thread? = null
+
+    private fun runJob(title: String, block: (log: (String) -> Unit) -> Unit) {
+        if (job != null || setup != null) return
+        JobState.update { JobState.Snapshot(running = true, title = title) }
+        job = thread(name = "pepelauncher-job") {
+            val error = runCatching {
+                block { line -> JobState.update { it.copy(message = line) } }
+            }.exceptionOrNull()
+            if (error != null) Log.e(TAG, "job failed: $title", error)
+            JobState.update {
+                it.copy(running = false, error = error?.let { e -> e.message ?: e.toString() })
+            }
+            job = null
+            ContextCompat.getMainExecutor(this).execute {
+                updateNotification()
+                stopIfIdle()
+            }
+        }
+        updateNotification()
+    }
+
+    /** Called on a job thread: ends every session and app before the rootfs is touched. */
+    private fun stopLinuxProcesses() {
+        val done = java.util.concurrent.CountDownLatch(1)
+        ContextCompat.getMainExecutor(this).execute {
+            _sessions.toList().forEach { it.finishIfRunning() }
+            _sessions.clear()
+            done.countDown()
+        }
+        done.await(5, java.util.concurrent.TimeUnit.SECONDS)
+        synchronized(apps) { apps.toList() }.forEach {
+            it.destroy()
+            it.waitFor(3, java.util.concurrent.TimeUnit.SECONDS)
+        }
+    }
+
+    private fun exportTo(uri: android.net.Uri) {
+        val out = contentResolver.openOutputStream(uri, "wt") ?: error("Cannot write $uri")
+        out.use { RootfsJobs.export(paths.prootConfig(), it) { line -> Log.i(TAG, line) } }
+    }
+
+    private fun importFrom(uri: android.net.Uri) {
+        check(paths.isInstalled) { getString(R.string.pepe_job_import_needs_system) }
+        stopLinuxProcesses()
+        val input = contentResolver.openInputStream(uri) ?: error("Cannot read $uri")
+        input.use { RootfsJobs.import(paths.prootConfig(), paths.rootfs, it) { line -> Log.i(TAG, line) } }
+        LinuxApps.repository(this).invalidate()
+    }
+
+    private fun resetRootfs() {
+        stopLinuxProcesses()
+        RootfsJobs.deleteTree(paths.rootfs)
+        RootfsJobs.deleteTree(paths.rootfsPartial)
+        RootfsJobs.deleteTree(paths.downloadDir)
+        RootfsJobs.deleteTree(paths.guestTmp)
+        LinuxApps.repository(this).invalidate()
+    }
+
+    // ---- Linux applications ----
+
+    private val apps = mutableListOf<Process>()
+
+    /** Starts a desktop entry's command; the service owns the process and keeps it alive. */
+    private fun launchApp(id: String) {
+        val entry = LinuxApps.find(this, id) ?: return
+        runCatching { Linux.setup(this).writeHostSideFiles() }
+        val env = ProotRunner.defaultGuestEnv().apply {
+            put("XDG_CURRENT_DESKTOP", DesktopEntryParser.DESKTOP_NAMES.first())
+        }
+        val invocation = ProotRunner.build(
+            paths.prootConfig(LinuxSettings(this)),
+            entry.command,
+            env,
+            workDir = entry.workingDirectory ?: ProotRunner.GUEST_HOME,
+        )
+        val process = runCatching { ProotRunner.start(invocation) }.getOrElse {
+            Log.e(TAG, "launch failed: $id", it)
+            return
+        }
+        synchronized(apps) { apps += process }
+        updateNotification()
+        val log = File(filesDir, "logs/$id.log").apply { parentFile?.mkdirs() }
+        thread(name = "pepelauncher-app-$id") {
+            runCatching {
+                log.outputStream().use { out -> process.inputStream.copyTo(out) }
+            }
+            process.waitFor()
+            synchronized(apps) { apps -= process }
+            ContextCompat.getMainExecutor(this).execute {
+                updateNotification()
+                stopIfIdle()
+            }
+        }
+    }
+
     // ---- terminal sessions ----
 
-    fun createSession(client: TerminalSessionClient?): TerminalSession {
+    /** A login shell, or [command] (argv inside the guest) when given. */
+    fun createSession(client: TerminalSessionClient?, command: List<String>? = null): TerminalSession {
         val settings = LinuxSettings(this)
         runCatching { Linux.setup(this).writeHostSideFiles() }
-        val invocation = ProotRunner.loginShell(paths.prootConfig(settings), settings.shell)
+        val config = paths.prootConfig(settings)
+        val invocation = if (command.isNullOrEmpty()) {
+            ProotRunner.loginShell(config, settings.shell)
+        } else {
+            ProotRunner.build(config, command)
+        }
         val env = invocation.hostEnvArray() + androidEnv()
         val session = TerminalSession(
             invocation.executable,
@@ -150,7 +267,7 @@ class LinuxService : Service() {
     // ---- lifecycle ----
 
     private fun stopIfIdle() {
-        if (_sessions.isEmpty() && setup == null) {
+        if (_sessions.isEmpty() && setup == null && job == null && synchronized(apps) { apps.isEmpty() }) {
             ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
             isForeground = false
             stopSelf()
@@ -161,12 +278,14 @@ class LinuxService : Service() {
         setup?.cancel()
         _sessions.toList().forEach { it.finishIfRunning() }
         _sessions.clear()
+        synchronized(apps) { apps.toList() }.forEach { it.destroy() }
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
         isForeground = false
         stopSelf()
     }
 
     override fun onDestroy() {
+        synchronized(apps) { apps.toList() }.forEach { it.destroy() }
         _sessions.toList().forEach { it.finishIfRunning() }
         _sessions.clear()
         setup?.cancel()
@@ -192,9 +311,14 @@ class LinuxService : Service() {
     private fun buildNotification(): Notification {
         val text = when {
             setup != null -> getString(R.string.pepe_notification_setup)
-            else -> resources.getQuantityString(
-                R.plurals.pepe_notification_sessions, _sessions.size, _sessions.size
-            )
+            job != null -> JobState.snapshot.title
+            else -> {
+                val appCount = synchronized(apps) { apps.size }
+                listOfNotNull(
+                    resources.getQuantityString(R.plurals.pepe_notification_sessions, _sessions.size, _sessions.size),
+                    if (appCount > 0) resources.getQuantityString(R.plurals.pepe_notification_apps, appCount, appCount) else null,
+                ).joinToString(" · ")
+            }
         }
         val target = if (setup != null) SetupActivity::class.java else TerminalActivity::class.java
         val open = PendingIntent.getActivity(
@@ -237,13 +361,20 @@ class LinuxService : Service() {
         const val ACTION_SETUP = "io.pepe.launcher.linux.action.SETUP"
         const val ACTION_KEEP_ALIVE = "io.pepe.launcher.linux.action.KEEP_ALIVE"
         const val ACTION_STOP = "io.pepe.launcher.linux.action.STOP"
+        const val ACTION_LAUNCH = "io.pepe.launcher.linux.action.LAUNCH"
+        const val ACTION_EXPORT = "io.pepe.launcher.linux.action.EXPORT"
+        const val ACTION_IMPORT = "io.pepe.launcher.linux.action.IMPORT"
+        const val ACTION_RESET = "io.pepe.launcher.linux.action.RESET"
+        const val ACTION_REINSTALL = "io.pepe.launcher.linux.action.REINSTALL"
+        const val EXTRA_APP_ID = "app_id"
+        private const val TAG = "pepe-linux"
         private const val CHANNEL_ID = "linux"
         private const val NOTIFICATION_ID = 0x7e7e
         private const val TRANSCRIPT_ROWS = 5000
 
-        fun start(context: Context, action: String) {
+        fun start(context: Context, action: String, extras: Intent.() -> Unit = {}) {
             ContextCompat.startForegroundService(
-                context, Intent(context, LinuxService::class.java).setAction(action)
+                context, Intent(context, LinuxService::class.java).setAction(action).apply(extras)
             )
         }
     }

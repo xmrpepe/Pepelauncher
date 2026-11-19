@@ -14,6 +14,7 @@ import android.os.Process
 import android.os.UserHandle
 import android.os.UserManager
 import androidx.annotation.ChecksSdkIntAtLeast
+import com.rama.mako.pepe.LinuxHooks
 import java.io.File
 
 class AppsProvider(private val context: Context) {
@@ -133,7 +134,7 @@ class AppsProvider(private val context: Context) {
             appEntries + pinnedShortcutEntries + dynamicShortcutEntries
         }
 
-        return realApps + getDisabledEntries(realApps)
+        return realApps + getDisabledEntries(realApps) + LinuxHooks.entries(context) // pepelauncher
     }
 
     private fun getDisabledEntries(realApps: List<AppEntry>): List<AppEntry> {
@@ -193,6 +194,8 @@ class AppsProvider(private val context: Context) {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return false
                     launcherApps.startShortcut(app.shortcutInfo, null, null)
                 }
+
+                is LinuxEntry -> return LinuxHooks.launch(context, app) // pepelauncher
             }
             true
         } catch (e: Exception) {
@@ -215,6 +218,8 @@ class AppsProvider(private val context: Context) {
     }
 
     fun getIcon(app: AppEntry): Drawable {
+        // pepelauncher: Linux icons may still be rendering, so they are cached on their side.
+        if (app is LinuxEntry) return LinuxHooks.icon(context, app)
         return iconCache.getOrPut(appCacheKey(app)) {
             when (app) {
                 is ActivityEntry ->
@@ -236,6 +241,8 @@ class AppsProvider(private val context: Context) {
                         ) ?: context.packageManager.defaultActivityIcon
                     }
                 }
+
+                is LinuxEntry -> LinuxHooks.icon(context, app) // pepelauncher (not reached)
             }
         }
     }
@@ -276,7 +283,7 @@ class AppsProvider(private val context: Context) {
                 val info = when (app) {
                     is ActivityEntry -> app.activityInfo.applicationInfo
                     is DisabledEntry -> app.applicationInfo
-                    is ShortcutEntry -> return@runCatching 0L
+                    is ShortcutEntry, is LinuxEntry -> return@runCatching 0L
                 }
                 var total = File(info.sourceDir).length()
                 info.splitSourceDirs?.forEach { split ->
@@ -386,6 +393,8 @@ class AppsProvider(private val context: Context) {
             is DisabledEntry -> "disabled:${app.packageName}:${app.userHandle.hashCode()}"
             is ShortcutEntry ->
                 "shortcut:${app.packageName}:${app.shortcutId}:${app.userHandle.hashCode()}"
+
+            is LinuxEntry -> "linux:${app.desktopId}" // pepelauncher
         }
 
     fun getPrivateProfileHandle(): UserHandle? {

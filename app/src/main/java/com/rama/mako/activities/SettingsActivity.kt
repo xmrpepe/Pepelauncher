@@ -21,6 +21,7 @@ import com.rama.mako.managers.GroupsManager
 import com.rama.mako.managers.HomeBackgroundManager
 import com.rama.mako.managers.IconManager
 import com.rama.mako.managers.PrefsManager
+import com.rama.mako.pepe.LinuxHooks
 
 class SettingsActivity : CsActivity() {
 
@@ -72,6 +73,7 @@ class SettingsActivity : CsActivity() {
         checkboxController = SettingsCheckboxController(this).also { it.setup() }
         groupsController = SettingsGroupsController(this).also { it.setup() }
         SettingsPinController(this).setup()
+        LinuxHooks.onSettingsCreated(this) // pepelauncher: "Linux settings" entry
     }
 
     override fun onResume() {

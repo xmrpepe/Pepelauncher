@@ -21,6 +21,7 @@ import com.rama.mako.R
 import com.rama.bohio.R as BohioR
 import com.rama.bohio.util.Dimens.spToPx
 import com.rama.mako.activities.SettingsActivity
+import com.rama.mako.pepe.LinuxHooks
 import java.text.Normalizer
 import java.util.Locale
 import kotlin.math.abs
@@ -485,6 +486,8 @@ class AppListManager(
                     ).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
                 )
             }
+
+            is LinuxEntry -> LinuxHooks.showActions(context, app) { refresh() } // pepelauncher
         }
     }
 
@@ -531,7 +534,7 @@ class AppListManager(
                 targetSdk = app.targetSdkVersion
             }
 
-            is AppsProvider.ShortcutEntry -> {
+            is AppsProvider.ShortcutEntry, is LinuxEntry -> {
                 apiRow.visibility = View.GONE
                 appSizeText.visibility = View.GONE
                 return

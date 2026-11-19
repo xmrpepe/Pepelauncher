@@ -8,6 +8,10 @@
         <item quantity="one">%d terminal session</item>
         <item quantity="other">%d terminal sessions</item>
     </plurals>
+    <plurals name="pepe_notification_apps">
+        <item quantity="one">%d app</item>
+        <item quantity="other">%d apps</item>
+    </plurals>
     <string name="pepe_notification_exit">Exit</string>
 
     <!-- Setup -->
@@ -34,6 +38,16 @@
     <string name="pepe_phantom_app_settings">App settings</string>
     <string name="pepe_ok">OK</string>
 
+    <!-- Linux apps -->
+    <string name="pepe_linux_group">Linux</string>
+    <string name="pepe_app_add_to_home">Add to home screen</string>
+    <string name="pepe_app_info">Package info</string>
+    <string name="pepe_app_uninstall">Uninstall</string>
+    <string name="pepe_app_uninstall_title">Uninstall %1$s?</string>
+    <string name="pepe_app_uninstall_text">pacman -Rns removes the package and its unused dependencies. The terminal opens so you can confirm.</string>
+    <string name="pepe_app_no_package">No package owns this entry.</string>
+    <string name="pepe_app_pin_unsupported">Pinned shortcuts are not supported here.</string>
+
     <!-- Terminal -->
     <string name="pepe_terminal_label">Terminal</string>
     <string name="pepe_terminal_new_session">New session</string>
@@ -46,4 +60,40 @@
     <string name="pepe_terminal_more">More</string>
     <string name="pepe_terminal_copied">Copied</string>
     <string name="pepe_terminal_session_failed">Could not start the shell: %1$s</string>
+
+    <!-- Settings -->
+    <string name="pepe_settings_entry">Linux settings</string>
+    <string name="pepe_settings_title">Linux settings</string>
+    <string name="pepe_settings_linux">Linux</string>
+    <string name="pepe_settings_storage">Storage used: %1$s</string>
+    <string name="pepe_settings_storage_none">Linux is not installed.</string>
+    <string name="pepe_settings_storage_counting">Storage used: counting…</string>
+    <string name="pepe_settings_open_setup">Setup and log</string>
+    <string name="pepe_settings_mirror">Arch Linux ARM mirror</string>
+    <string name="pepe_settings_custom_url">Custom rootfs URL (.tar.gz, overrides the mirror)</string>
+    <string name="pepe_settings_sha256">Expected SHA-256 of the rootfs (optional)</string>
+    <string name="pepe_settings_shell">Default shell</string>
+    <string name="pepe_settings_bind_sdcard">Bind phone storage to /sdcard</string>
+    <string name="pepe_settings_swipe_terminal">Swipe right on home opens the terminal</string>
+    <string name="pepe_settings_reinstall">Reinstall Linux</string>
+    <string name="pepe_settings_reset">Remove Linux</string>
+    <string name="pepe_settings_reset_confirm">This deletes the whole Linux system, including everything in /root. Continue?</string>
+    <string name="pepe_settings_reinstall_confirm">This deletes the whole Linux system, including everything in /root, and installs it again. Continue?</string>
+    <string name="pepe_settings_display">Display</string>
+    <string name="pepe_settings_scale">Scale factor for Linux windows</string>
+    <string name="pepe_settings_scale_auto">auto (screen density)</string>
+    <string name="pepe_settings_touch_as_mouse">Touch acts as a mouse (off: touch input)</string>
+    <string name="pepe_settings_auto_keyboard">Show the keyboard automatically</string>
+    <string name="pepe_settings_recents">Recents</string>
+    <string name="pepe_settings_dialogs_own_task">Dialogs get their own Recents card (off: attach to their window)</string>
+    <string name="pepe_settings_backup">Backup</string>
+    <string name="pepe_settings_backup_text">Saves the Linux system as a .tar.zst file (package cache excluded). Restoring replaces the current system and needs an installed system.</string>
+    <string name="pepe_settings_export">Export (tar.zst)</string>
+    <string name="pepe_settings_import">Import (tar.zst)</string>
+    <string name="pepe_job_export">Exporting the Linux system…</string>
+    <string name="pepe_job_import">Importing the Linux system…</string>
+    <string name="pepe_job_reset">Removing the Linux system…</string>
+    <string name="pepe_job_import_needs_system">Install Linux before importing a backup.</string>
+    <string name="pepe_job_done">%1$s done</string>
+    <string name="pepe_job_failed">%1$s failed: %2$s</string>
 </resources>

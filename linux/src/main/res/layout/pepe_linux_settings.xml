@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/linux_settings_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_1"
+    android:orientation="vertical"
+    style="@style/VerticalListDivided">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout style="@style/VerticalList">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pepe_settings_title"
+                style="@style/H2" />
+
+            <TextView
+                android:id="@+id/job_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                style="@style/Text" />
+
+            <!-- Linux -->
+            <com.rama.bohio.widgets.WdCollapsibleSection
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:defaultExpanded="true"
+                app:header="@string/pepe_settings_linux"
+                app:key="pepe:settings:linux">
+
+                <TextView
+                    android:id="@+id/storage_used"
+                    style="@style/Text" />
+
+                <Button
+                    android:id="@+id/open_setup"
+                    android:text="@string/pepe_settings_open_setup"
+                    style="@style/BTN2" />
+
+                <TextView
+                    android:text="@string/pepe_settings_mirror"
+                    style="@style/Small" />
+
+                <EditText
+                    android:id="@+id/mirror"
+                    android:inputType="textUri"
+                    style="@style/EditText" />
+
+                <TextView
+                    android:text="@string/pepe_settings_custom_url"
+                    style="@style/Small" />
+
+                <EditText
+                    android:id="@+id/custom_url"
+                    android:hint="https://…/rootfs.tar.gz"
+                    android:inputType="textUri"
+                    style="@style/EditText" />
+
+                <TextView
+                    android:text="@string/pepe_settings_sha256"
+                    style="@style/Small" />
+
+                <EditText
+                    android:id="@+id/sha256"
+                    android:inputType="text"
+                    android:fontFamily="monospace"
+                    style="@style/EditText" />
+
+                <TextView
+                    android:text="@string/pepe_settings_shell"
+                    style="@style/Small" />
+
+                <EditText
+                    android:id="@+id/shell"
+                    android:inputType="text"
+                    style="@style/EditText" />
+
+                <com.rama.bohio.widgets.WdCheckbox
+                    android:id="@+id/bind_sdcard"
+                    android:text="@string/pepe_settings_bind_sdcard"
+                    style="@style/Checkbox" />
+
+                <com.rama.bohio.widgets.WdCheckbox
+                    android:id="@+id/swipe_terminal"
+                    android:text="@string/pepe_settings_swipe_terminal"
+                    style="@style/Checkbox" />
+
+                <Button
+                    android:id="@+id/phantom"
+                    android:text="@string/pepe_phantom_button"
+                    style="@style/BTN2" />
+
+                <Button
+                    android:id="@+id/reinstall"
+                    android:text="@string/pepe_settings_reinstall"
+                    style="@style/BTN2" />
+
+                <Button
+                    android:id="@+id/reset"
+                    android:text="@string/pepe_settings_reset"
+                    style="@style/BTN_danger" />
+            </com.rama.bohio.widgets.WdCollapsibleSection>
+
+            <!-- Display -->
+            <com.rama.bohio.widgets.WdCollapsibleSection
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:defaultExpanded="false"
+                app:header="@string/pepe_settings_display"
+                app:key="pepe:settings:display">
+
+                <TextView
+                    android:text="@string/pepe_settings_scale"
+                    style="@style/Small" />
+
+                <EditText
+                    android:id="@+id/scale"
+                    android:hint="@string/pepe_settings_scale_auto"
+                    android:inputType="numberDecimal"
+                    style="@style/EditText" />
+
+                <com.rama.bohio.widgets.WdCheckbox
+                    android:id="@+id/touch_as_mouse"
+                    android:text="@string/pepe_settings_touch_as_mouse"
+                    style="@style/Checkbox" />
+
+                <com.rama.bohio.widgets.WdCheckbox
+                    android:id="@+id/auto_keyboard"
+                    android:text="@string/pepe_settings_auto_keyboard"
+                    style="@style/Checkbox" />
+            </com.rama.bohio.widgets.WdCollapsibleSection>
+
+            <!-- Recents -->
+            <com.rama.bohio.widgets.WdCollapsibleSection
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:defaultExpanded="false"
+                app:header="@string/pepe_settings_recents"
+                app:key="pepe:settings:recents">
+
+                <com.rama.bohio.widgets.WdCheckbox
+                    android:id="@+id/dialogs_own_task"
+                    android:text="@string/pepe_settings_dialogs_own_task"
+                    style="@style/Checkbox" />
+            </com.rama.bohio.widgets.WdCollapsibleSection>
+
+            <!-- Backup -->
+            <com.rama.bohio.widgets.WdCollapsibleSection
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:defaultExpanded="false"
+                app:header="@string/pepe_settings_backup"
+                app:key="pepe:settings:backup">
+
+                <TextView
+                    android:text="@string/pepe_settings_backup_text"
+                    style="@style/Small" />
+
+                <Button
+                    android:id="@+id/export"
+                    android:text="@string/pepe_settings_export"
+                    style="@style/BTN2" />
+
+                <Button
+                    android:id="@+id/import_backup"
+                    android:text="@string/pepe_settings_import"
+                    style="@style/BTN2" />
+            </com.rama.bohio.widgets.WdCollapsibleSection>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

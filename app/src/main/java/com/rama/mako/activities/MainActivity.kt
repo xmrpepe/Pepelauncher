@@ -175,6 +175,7 @@ class MainActivity : CsActivity() {
             }
         }
         appListManager.setup()
+        LinuxHooks.onHomeCreated(this) { appListManager.refresh() } // pepelauncher
 
         lockButton = homeHeader.findViewById(R.id.lock_btn)
         lockButtonIcon = lockButton.findViewById(R.id.lock_icon)

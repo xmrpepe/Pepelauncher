@@ -120,7 +120,11 @@ class TerminalActivity : ComponentActivity() {
             val svc = (binder as LinuxService.LocalBinder).service
             service = svc
             svc.sessions.forEach { it.updateTerminalSessionClient(sessionClient) }
-            val session = svc.sessions.lastOrNull() ?: newSession() ?: return
+            val requested = consumeCommand(intent)
+            val session = when {
+                requested != null -> newSession(requested)
+                else -> svc.sessions.lastOrNull() ?: newSession()
+            } ?: return
             attach(session)
         }
 
@@ -171,6 +175,19 @@ class TerminalActivity : ComponentActivity() {
         bindService(Intent(this, LinuxService::class.java), connection, Context.BIND_AUTO_CREATE)
     }
 
+    /** A command from [EXTRA_COMMAND] (Terminal=true apps, pacman actions) opens its own tab. */
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        val command = consumeCommand(intent) ?: return
+        if (service != null) newSession(command)?.let(::attach) else setIntent(intent)
+    }
+
+    private fun consumeCommand(intent: Intent?): List<String>? {
+        val command = intent?.getStringArrayListExtra(EXTRA_COMMAND)?.takeIf { it.isNotEmpty() }
+        intent?.removeExtra(EXTRA_COMMAND)
+        return command
+    }
+
     override fun onResume() {
         super.onResume()
         terminalView.requestFocus()
@@ -186,8 +203,8 @@ class TerminalActivity : ComponentActivity() {
 
     // ---- sessions & tabs ----
 
-    private fun newSession(): TerminalSession? = runCatching {
-        service?.createSession(sessionClient)
+    private fun newSession(command: List<String>? = null): TerminalSession? = runCatching {
+        service?.createSession(sessionClient, command)
     }.onFailure {
         Toast.makeText(this, getString(R.string.pepe_terminal_session_failed, it.message), Toast.LENGTH_LONG).show()
     }.getOrNull()
@@ -351,5 +368,14 @@ class TerminalActivity : ComponentActivity() {
         finish()
         @Suppress("DEPRECATION")
         overridePendingTransition(R.anim.pepe_slide_in_right, R.anim.pepe_slide_out_left)
+    }
+
+    companion object {
+        /** ArrayList<String>: argv to run inside the guest in a new tab. */
+        const val EXTRA_COMMAND = "io.pepe.launcher.linux.extra.COMMAND"
+
+        fun commandIntent(context: Context, command: List<String>): Intent =
+            Intent(context, TerminalActivity::class.java)
+                .putStringArrayListExtra(EXTRA_COMMAND, ArrayList(command))
     }
 }

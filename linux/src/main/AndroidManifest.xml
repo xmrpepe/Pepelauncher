@@ -31,10 +31,28 @@
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden|navigation|uiMode|density"
             android:exported="false"
             android:label="@string/pepe_terminal_label"
+            android:launchMode="singleTop"
             android:process=":linux"
             android:resizeableActivity="true"
             android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity
+            android:name=".ui.LinuxSettingsActivity"
+            android:exported="false"
+            android:label="@string/pepe_settings_title"
+            android:process=":linux"
+            android:theme="@style/Theme.Rama.Base"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".apps.LinuxLaunchActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:noHistory="true"
+            android:process=":linux"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
     </application>
 
