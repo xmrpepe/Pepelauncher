@@ -97,6 +97,8 @@ struct pepe_xdg_surface {
     struct pepe_window *window;      /* toplevel: the window it owns; popup: the window it is in */
     bool configured;
     uint32_t configure_serial;
+    uint32_t acked_serial;
+    bool size_settled;               /* committed after acking our latest configure */
     bool has_geometry, pending_has_geometry;
     int32_t geo_x, geo_y, geo_w, geo_h;
     int32_t pending_geo_x, pending_geo_y, pending_geo_w, pending_geo_h;

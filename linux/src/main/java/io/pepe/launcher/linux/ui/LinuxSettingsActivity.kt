@@ -27,6 +27,11 @@ import kotlin.concurrent.thread
 /** Linux, display, Recents and backup settings (section 5). */
 class LinuxSettingsActivity : BohioActivity() {
 
+    override fun attachBaseContext(newBase: android.content.Context) {
+        LinuxUiPrefs.ensure(newBase)
+        super.attachBaseContext(newBase)
+    }
+
     private lateinit var settings: LinuxSettings
     private lateinit var paths: LinuxPaths
     private lateinit var jobStatus: TextView

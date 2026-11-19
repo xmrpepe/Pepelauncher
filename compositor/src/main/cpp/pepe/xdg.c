@@ -189,6 +189,8 @@ void pepe_xdg_surface_committed(struct pepe_surface *surface) {
         xdg->geo_w = xdg->pending_geo_w;
         xdg->geo_h = xdg->pending_geo_h;
     }
+    /* The client has applied our latest size: if it is still larger, that is its real minimum. */
+    xdg->size_settled = xdg->configured && xdg->acked_serial == xdg->configure_serial;
     if (!xdg->configured) {
         /* Initial commit: answer with the first configure. */
         xdg->configured = true;
@@ -291,7 +293,9 @@ static void xdg_surface_set_window_geometry(struct wl_client *c, struct wl_resou
 }
 
 static void xdg_surface_ack_configure(struct wl_client *c, struct wl_resource *r, uint32_t serial) {
-    (void) c; (void) r; (void) serial;
+    (void) c;
+    struct pepe_xdg_surface *xdg = wl_resource_get_user_data(r);
+    xdg->acked_serial = serial;
 }
 
 static const struct xdg_surface_interface xdg_surface_impl = {

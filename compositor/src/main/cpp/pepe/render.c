@@ -103,6 +103,10 @@ struct pepe_surface *pepe_surface_at(struct pepe_window *w, double x, double y, 
  */
 double pepe_window_fit_scale(struct pepe_window *w, int32_t px_w, int32_t px_h) {
     double scale = w->scale > 0 ? w->scale : 1.0;
+    /* Only Wayland clients that applied our size and are still larger (a real minimum size) are
+     * scaled down. X11 windows are always resized by the window manager instead; their first
+     * frames still show the default size and must not be mistaken for a minimum. */
+    if (!w->xdg || !w->xdg->size_settled || w->width <= 0) return w->render_scale > 0 ? w->render_scale : scale;
     int32_t gx, gy, gw, gh;
     pepe_window_get_geometry(w, &gx, &gy, &gw, &gh);
     if (gw > 0 && px_w > 0 && gw * scale > px_w) scale = (double) px_w / gw;

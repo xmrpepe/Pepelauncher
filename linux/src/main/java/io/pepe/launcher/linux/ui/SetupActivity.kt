@@ -21,6 +21,11 @@ import io.pepe.launcher.linux.setup.LinuxSetup
 /** First-run setup screen: shows the progress of the setup job that [LinuxService] runs. */
 class SetupActivity : BohioActivity() {
 
+    override fun attachBaseContext(newBase: android.content.Context) {
+        LinuxUiPrefs.ensure(newBase)
+        super.attachBaseContext(newBase)
+    }
+
     private lateinit var stage: TextView
     private lateinit var progress: ProgressBar
     private lateinit var detail: TextView

@@ -1,1 +1,24 @@
-Built entirely in native Kotlin, runs fully on-device, avoids tracking, and keeps distractions to a minimum by emphasizing clarity and intentional interaction.
+<p><b>pepelauncher</b> is a minimal Android launcher with a complete Arch Linux ARM system inside, without root. It is a fork of the privacy-first launcher Mako.</p>
+
+<p><b>A launcher first</b></p>
+<ul>
+<li>Fast, text-first app list with groups, favourites, fuzzy search, custom names, icon packs and themes.</li>
+<li>Clock, date and battery header, PIN-locked settings, private space support.</li>
+</ul>
+
+<p><b>Arch Linux ARM, without root</b></p>
+<ul>
+<li>Downloads the official Arch Linux ARM image, checks it and sets it up with pacman. Runs in proot: no root, no Termux, no extra apps.</li>
+<li>Swipe right on the home screen for a full-screen Linux terminal with tabs, extra keys, pinch zoom and copy/paste.</li>
+<li>Apps you install with pacman appear in a Linux section of the app list, and disappear when you remove them.</li>
+</ul>
+
+<p><b>Every Linux window is an Android app</b></p>
+<ul>
+<li>A built-in Wayland compositor gives each Linux window its own task and Recents card, with its title and icon. X11 apps work through Xwayland.</li>
+<li>Touch as mouse or touch, hardware keyboard and mouse, on-screen keyboard, shared clipboard, split screen and picture-in-picture.</li>
+</ul>
+
+<p><b>Two builds:</b> "linux" (everything above; network only to download Linux and packages) and "plain" (exactly Mako, no network access). No analytics, no telemetry.</p>
+
+<p>Early version: not yet tested on many devices. Android 10 to 15.</p>

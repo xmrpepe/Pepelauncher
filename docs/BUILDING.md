@@ -104,3 +104,21 @@ PROOT_DIR=/tmp/hostproot WORK=<work dir with arch/> HOST_BIN=/tmp/pepe-host/pepe
 It checks the step-5 milestones (foot, two mousepad windows, xeyes through Xwayland, closing)
 and leaves `window-<id>.png` snapshots in `$OUT` (default `/tmp/pepe-smoke`). See
 `compositor/README.pepelauncher.md` for the vendored libraries and how generated files are made.
+
+## Regenerating the screenshots
+
+`docs/screenshots/` and the store screenshots come from opt-in tests:
+
+```sh
+# Android screens, rendered by Robolectric (real framework drawing, no device needed)
+PEPE_SCREENSHOT_DIR=/tmp/shots \
+PEPE_SCREENSHOT_SETUP_LOG=<a setup log> \
+PEPE_SCREENSHOT_TRANSCRIPT=<raw terminal output, e.g. recorded with script(1)> \
+  sh gradlew :linux:testDebugUnitTest --tests '*ScreenshotsTest*'
+PEPE_SCREENSHOT_DIR=/tmp/shots PEPE_SCREENSHOT_ROOTFS=<an Arch rootfs with apps installed> \
+  sh gradlew :app:testLinuxDebugUnitTest --tests '*HomeScreenshotTest*'
+# Linux windows: the compositor's desktop backend at phone size, e.g.
+/tmp/pepe-host/pepe-host <socket> /tmp/shots /tmp/cmd 2.625 1080x2400 [-- <Xwayland command>]
+```
+
+The README images are these PNGs scaled to 540x1200.
