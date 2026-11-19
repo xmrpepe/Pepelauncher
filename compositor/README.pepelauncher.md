@@ -18,7 +18,7 @@ Generated protocol code in `src/main/cpp/generated/protocols/` comes from waylan
 viewporter, fractional-scale-v1, text-input-unstable-v3, xwayland-shell-v1.
 
 `src/main/cpp/generated/keymap_us.h` is the US (evdev/pc105) keymap compiled by xkbcommon from
-xeyboard-config, with keycodes above 255 removed (Xwayland's xkbcomp rejects them).
+xkeyboard-config, with keycodes above 255 removed (Xwayland's xkbcomp rejects them).
 
 ### Regenerating
 

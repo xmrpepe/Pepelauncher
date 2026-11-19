@@ -26,6 +26,7 @@ include(":bohio")
 include(":linux")
 include(":proot")
 include(":terminal")
+include(":compositor")
 
 // Activate For Release
 project(":bohio").projectDir = file("bohio")

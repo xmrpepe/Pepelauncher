@@ -100,5 +100,11 @@ object GuestFiles {
         Exec = /usr/bin/touch $stampPath
     """.trimIndent() + "\n"
 
+    /** D-Bus and systemd tools refuse to work with an empty /etc/machine-id (the rootfs ships one). */
+    fun machineId(random: java.util.UUID = java.util.UUID.randomUUID()): String =
+        random.toString().replace("-", "") + "\n"
+
+    fun isValidMachineId(text: String?): Boolean = text?.trim()?.matches(Regex("[0-9a-f]{32}")) == true
+
     val DEFAULT_NAMESERVERS = listOf("1.1.1.1", "8.8.8.8")
 }

@@ -37,6 +37,20 @@
             android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
+        <!-- One task per Linux window: every window gets its own Recents card. -->
+        <activity
+            android:name=".display.LinuxWindowActivity"
+            android:autoRemoveFromRecents="true"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden|navigation|uiMode|density"
+            android:documentLaunchMode="always"
+            android:exported="false"
+            android:label="@string/pepe_window_untitled"
+            android:process=":linux"
+            android:resizeableActivity="true"
+            android:supportsPictureInPicture="true"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
         <activity
             android:name=".ui.LinuxSettingsActivity"
             android:exported="false"

@@ -61,6 +61,20 @@
     <string name="pepe_terminal_copied">Copied</string>
     <string name="pepe_terminal_session_failed">Could not start the shell: %1$s</string>
 
+    <!-- Linux windows -->
+    <string name="pepe_window_channel">Linux windows</string>
+    <string name="pepe_window_opened">Opened a window. Tap to show it.</string>
+    <string name="pepe_window_untitled">Linux window</string>
+    <string name="pepe_window_touch_mode">Touch input (instead of mouse)</string>
+    <string name="pepe_window_mouse_mode">Mouse input (instead of touch)</string>
+    <string name="pepe_window_pip">Picture-in-picture</string>
+    <string name="pepe_window_close">Close window</string>
+    <plurals name="pepe_notification_windows">
+        <item quantity="one">%d window</item>
+        <item quantity="other">%d windows</item>
+    </plurals>
+    <string name="pepe_settings_install_x11">Install X11 app support (xorg-xwayland)</string>
+
     <!-- Settings -->
     <string name="pepe_settings_entry">Linux settings</string>
     <string name="pepe_settings_title">Linux settings</string>

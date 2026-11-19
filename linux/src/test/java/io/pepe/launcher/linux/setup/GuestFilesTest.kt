@@ -68,6 +68,14 @@ class GuestFilesTest {
     }
 
     @Test
+    fun `machine id is 32 lowercase hex digits`() {
+        val id = GuestFiles.machineId()
+        assertThat(GuestFiles.isValidMachineId(id)).isTrue()
+        assertThat(GuestFiles.isValidMachineId("")).isFalse()
+        assertThat(GuestFiles.isValidMachineId("uninitialized\n")).isFalse()
+    }
+
+    @Test
     fun `resolv conf falls back to public resolvers`() {
         assertThat(GuestFiles.resolvConf(listOf("10.0.0.1", "")))
             .isEqualTo("nameserver 10.0.0.1\n")

@@ -150,7 +150,7 @@ userland. Those need a phone or a `adb`-attached device. I will mark each milest
 | 2 Flavors, rename, NOTICE | done | Both flavors build (debug and release). `aapt2` shows the `plain` APK has only mako's permission and no `.so` files. mako's unit tests pass in both flavors. |
 | 3 proot, setup, terminal | done (built) | proot cross-builds for 3 ABIs, 16 KB-aligned. 145 Termux tests pass. The full setup ran end to end, including `pacman -Syu`, through a **host** build of the same proot against Arch x86_64 (`HostSetupIntegrationTest`). **Not yet run on a phone.** |
 | 4 Linux section | done (built) | On the host rootfs, `pacman -S mousepad` fires the hook and the entry appears with its icon; `pacman -Rns` removes it (`HostAppsIntegrationTest`). Launcher UI **not yet run on a phone.** |
-| 5 Compositor, XWayland | **not started**: waiting on Q1 | — |
+| 5 Compositor, XWayland | done (built) | libffi and libxcb approved (Q1). `compositor/host/smoke-test.sh` runs the real compositor core on the desktop with clients from the Arch rootfs: `foot` gets a window, two `mousepad`s get two windows, `xeyes` works through Xwayland, closing removes the window (all pass). Popups, clipboard both ways, IME text and pointer were also checked against PNG snapshots. Android glue (JNI, `LinuxWindowActivity`) compiles; **not yet run on a phone.** |
 | 6 Settings, tests, docs | done except compositor-related parts | Settings screen, `BUILDING.md`, parser and `ProotRunner` unit tests, instrumented `SetupSmokeTest` (compiles; needs a device to run). |
 
 ## 6. Open questions (answers change what gets built)

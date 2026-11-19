@@ -52,6 +52,20 @@ object LinuxApps {
     fun find(context: Context, id: String): DesktopEntry? =
         runCatching { repository(context).find(id) }.getOrNull()
 
+    /**
+     * The desktop entry for a window's app_id (Wayland) or WM_CLASS (X11): by desktop file ID,
+     * StartupWMClass, or the program name, case-insensitively.
+     */
+    fun findForAppId(context: Context, appId: String): DesktopEntry? {
+        if (appId.isBlank()) return null
+        val all = runCatching { repository(context).all() }.getOrDefault(emptyList())
+        val key = appId.lowercase()
+        return all.firstOrNull { it.id.lowercase() == key }
+            ?: all.firstOrNull { it.startupWmClass?.lowercase() == key }
+            ?: all.firstOrNull { it.id.lowercase().endsWith(".$key") }
+            ?: all.firstOrNull { it.command.firstOrNull()?.substringAfterLast('/')?.lowercase() == key }
+    }
+
     // ---- icons ----
 
     fun icon(context: Context, id: String, label: String): Drawable {

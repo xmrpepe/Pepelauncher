@@ -19,6 +19,7 @@ import com.termux.terminal.TerminalSessionClient
 import android.util.Log
 import io.pepe.launcher.linux.apps.DesktopEntryParser
 import io.pepe.launcher.linux.apps.LinuxApps
+import io.pepe.launcher.linux.display.LinuxDisplay
 import java.io.File
 import io.pepe.launcher.linux.Linux
 import io.pepe.launcher.linux.LinuxPaths
@@ -59,6 +60,13 @@ class LinuxService : Service() {
     override fun onCreate() {
         super.onCreate()
         createChannel()
+        // The Wayland compositor (and Xwayland) live as long as the service.
+        LinuxDisplay.onWindowsChanged = {
+            updateNotification()
+            stopIfIdle()
+        }
+        if (paths.isReady) runCatching { LinuxDisplay.start(this) }
+            .onFailure { Log.e(TAG, "display failed to start", it) }
     }
 
     override fun onBind(intent: Intent?): IBinder = binder
@@ -190,6 +198,7 @@ class LinuxService : Service() {
     /** Starts a desktop entry's command; the service owns the process and keeps it alive. */
     private fun launchApp(id: String) {
         val entry = LinuxApps.find(this, id) ?: return
+        if (LinuxDisplay.compositor == null) runCatching { LinuxDisplay.start(this) }
         runCatching { Linux.setup(this).writeHostSideFiles() }
         val env = ProotRunner.defaultGuestEnv().apply {
             put("XDG_CURRENT_DESKTOP", DesktopEntryParser.DESKTOP_NAMES.first())
@@ -267,7 +276,9 @@ class LinuxService : Service() {
     // ---- lifecycle ----
 
     private fun stopIfIdle() {
-        if (_sessions.isEmpty() && setup == null && job == null && synchronized(apps) { apps.isEmpty() }) {
+        if (_sessions.isEmpty() && setup == null && job == null && LinuxDisplay.windowCount == 0 &&
+            synchronized(apps) { apps.isEmpty() }
+        ) {
             ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
             isForeground = false
             stopSelf()
@@ -285,6 +296,8 @@ class LinuxService : Service() {
     }
 
     override fun onDestroy() {
+        LinuxDisplay.onWindowsChanged = null
+        LinuxDisplay.stop()
         synchronized(apps) { apps.toList() }.forEach { it.destroy() }
         _sessions.toList().forEach { it.finishIfRunning() }
         _sessions.clear()
@@ -317,6 +330,9 @@ class LinuxService : Service() {
                 listOfNotNull(
                     resources.getQuantityString(R.plurals.pepe_notification_sessions, _sessions.size, _sessions.size),
                     if (appCount > 0) resources.getQuantityString(R.plurals.pepe_notification_apps, appCount, appCount) else null,
+                    LinuxDisplay.windowCount.takeIf { it > 0 }?.let {
+                        resources.getQuantityString(R.plurals.pepe_notification_windows, it, it)
+                    },
                 ).joinToString(" · ")
             }
         }

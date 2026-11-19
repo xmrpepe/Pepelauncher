@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.22)
+project(pepecompositor C ASM)
+include(${CMAKE_CURRENT_LIST_DIR}/core.cmake)
+add_library(pepecompositor SHARED android.c)
+target_compile_options(pepecompositor PRIVATE -Wall -Wextra -Wno-unused-parameter)
+target_link_libraries(pepecompositor pepe_core android log)
+target_link_options(pepecompositor PRIVATE "-Wl,--gc-sections" "-Wl,-z,max-page-size=16384")

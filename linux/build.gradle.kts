@@ -36,6 +36,7 @@ dependencies {
     implementation(project(":bohio"))
     implementation(project(":proot"))
     implementation(project(":terminal"))
+    implementation(project(":compositor"))
     implementation("org.apache.commons:commons-compress:1.27.1")
 
     testImplementation(libs.junit)

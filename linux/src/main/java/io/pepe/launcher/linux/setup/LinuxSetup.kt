@@ -163,6 +163,10 @@ class LinuxSetup(
         val localeGen = File(etc, "locale.gen")
         if (localeGen.isFile) localeGen.writeText(GuestFiles.enableLocale(localeGen.readText()))
         writeReplacing(File(etc, "locale.conf"), "LANG=en_US.UTF-8\n")
+        val machineId = File(etc, "machine-id")
+        if (!GuestFiles.isValidMachineId(runCatching { machineId.readText() }.getOrNull())) {
+            writeReplacing(machineId, GuestFiles.machineId())
+        }
 
         stateDir.mkdirs()
         File(etc, "pacman.d/hooks").mkdirs()

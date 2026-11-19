@@ -87,3 +87,20 @@ PEPE_HOST_PROOT_DIR=/tmp/hostproot PEPE_HOST_ROOTFS_TGZ=/tmp/boot.tar.gz \
 
 Behind a TLS-intercepting proxy, also set `PEPE_HOST_EXTRA_CA=<PEM file or bundle with the proxy CA>`. The test then
 installs that CA in the guest before `pacman -Syu`.
+
+## Testing the compositor on a desktop
+
+The compositor core (`compositor/src/main/cpp/pepe/`) is platform independent. A desktop test
+backend renders each window into a PNG and takes input commands from a FIFO:
+
+```sh
+cmake -S compositor/host -B /tmp/pepe-host -G Ninja && ninja -C /tmp/pepe-host
+# in the rootfs from HostSetupIntegrationTest:
+#   pacman -S foot mousepad xorg-xwayland xorg-xeyes ttf-dejavu
+PROOT_DIR=/tmp/hostproot WORK=<work dir with arch/> HOST_BIN=/tmp/pepe-host/pepe-host \
+  compositor/host/smoke-test.sh
+```
+
+It checks the step-5 milestones (foot, two mousepad windows, xeyes through Xwayland, closing)
+and leaves `window-<id>.png` snapshots in `$OUT` (default `/tmp/pepe-smoke`). See
+`compositor/README.pepelauncher.md` for the vendored libraries and how generated files are made.

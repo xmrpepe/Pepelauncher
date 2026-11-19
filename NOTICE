@@ -32,3 +32,10 @@ Each entry is added here when the component is actually included in the build.
   Apache License 2.0 (derived from jackpal's Android-Terminal-Emulator). Vendored in
   terminal/, see terminal/README.pepelauncher.md and terminal/LICENSE-APACHE-2.0.txt.
 - Apache Commons Compress — https://commons.apache.org/compress — Apache License 2.0.
+- libwayland-server 1.26.0 and wayland-protocols 1.50 (generated protocol code) —
+  https://gitlab.freedesktop.org/wayland — MIT. Vendored in compositor/.
+- libffi 3.8.1 — https://github.com/libffi/libffi — MIT. Vendored in compositor/.
+- libxkbcommon 1.13.2 — https://github.com/xkbcommon/libxkbcommon — MIT. Vendored in compositor/;
+  the built-in US keymap is compiled from xkeyboard-config (MIT/X11).
+- libxcb 1.17.0 and xcb-proto 1.17.0 (generated bindings) — https://gitlab.freedesktop.org/xorg —
+  MIT/X11. Vendored in compositor/. See compositor/README.pepelauncher.md for all of the above.

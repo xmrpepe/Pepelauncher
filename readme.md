@@ -10,8 +10,9 @@
   home-screen shortcut, package info or uninstall.
 - Linux settings for the mirror, shell, `/sdcard` binding, reinstall/remove, and
   `tar.zst` backup and restore.
-- Planned: a Wayland compositor that gives every Linux window its own Android task and Recents
-  card, with Xwayland for X11 apps.
+- A built-in Wayland compositor: **every Linux window opens as its own Android task** with its
+  own Recents card, title and icon. X11 apps run through Xwayland. Touch works as a mouse or as
+  touch, and mice, keyboards, the on-screen keyboard and the clipboard all work.
 
 Two builds: `linux` (pepelauncher) and `plain` (exactly mako: no network permission, no native
 code). See [docs/BUILDING.md](docs/BUILDING.md) to build, and [NOTICE](NOTICE) for credits.

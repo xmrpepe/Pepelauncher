@@ -80,6 +80,16 @@ class LinuxSettingsActivity : BohioActivity() {
             startActivity(Intent(this, SetupActivity::class.java))
         }
         findViewById<Button>(R.id.phantom).setOnClickListener { PhantomProcessGuide.show(this) }
+        findViewById<Button>(R.id.install_x11).setOnClickListener {
+            // In the terminal, so pacman's questions and progress are visible. Xwayland starts with
+            // the next Linux session (the display restarts when the service does).
+            startActivity(
+                io.pepe.launcher.linux.terminal.TerminalActivity.commandIntent(
+                    this,
+                    listOf("/bin/bash", "-c", "pacman -S --needed xorg-xwayland; echo; read -rp 'Press Enter to close '")
+                )
+            )
+        }
         findViewById<Button>(R.id.reinstall).setOnClickListener {
             confirm(R.string.pepe_settings_reinstall_confirm) {
                 LinuxService.start(this, LinuxService.ACTION_REINSTALL)
@@ -120,6 +130,7 @@ class LinuxSettingsActivity : BohioActivity() {
 
     override fun onPause() {
         textSavers.forEach { it() }
+        io.pepe.launcher.linux.display.LinuxDisplay.refreshSettings(this)
         super.onPause()
     }
 
