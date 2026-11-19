@@ -33,6 +33,9 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(project(":bohio"))
+    implementation(project(":proot"))
+    implementation(project(":terminal"))
+    implementation("org.apache.commons:commons-compress:1.27.1")
 
     testImplementation(libs.junit)
     testImplementation(libs.truth)

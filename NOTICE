@@ -22,3 +22,13 @@ docs/attributions.md.
 Third-party components added by pepelauncher
 --------------------------------------------
 Each entry is added here when the component is actually included in the build.
+
+- PRoot (termux fork) — https://github.com/termux/proot — GPL-2.0-or-later.
+  Built from source (submodule proot/third_party/proot) into libproot.so and
+  libproot-loader*.so, which pepelauncher executes as separate programs.
+- talloc 2.4.3 (Samba project) — https://talloc.samba.org — LGPL-3.0-or-later.
+  Vendored subset in proot/third_party/talloc, statically linked into libproot.so.
+- Termux terminal-emulator and terminal-view — https://github.com/termux/termux-app —
+  Apache License 2.0 (derived from jackpal's Android-Terminal-Emulator). Vendored in
+  terminal/, see terminal/README.pepelauncher.md and terminal/LICENSE-APACHE-2.0.txt.
+- Apache Commons Compress — https://commons.apache.org/compress — Apache License 2.0.

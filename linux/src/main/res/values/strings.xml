@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Notification -->
+    <string name="pepe_notification_channel">Linux</string>
+    <string name="pepe_notification_title">Linux is running</string>
+    <string name="pepe_notification_setup">Setting up Arch Linux ARM…</string>
+    <plurals name="pepe_notification_sessions">
+        <item quantity="one">%d terminal session</item>
+        <item quantity="other">%d terminal sessions</item>
+    </plurals>
+    <string name="pepe_notification_exit">Exit</string>
+
+    <!-- Setup -->
+    <string name="pepe_setup_title">Linux</string>
+    <string name="pepe_setup_intro">pepelauncher runs Arch Linux ARM in proot, without root. Setup downloads the official root filesystem (about 550 MB) from %1$s, checks it, unpacks it (about 2 GB) and updates it with pacman. You can leave this screen; setup keeps running in the background.</string>
+    <string name="pepe_setup_unsupported">Linux needs Android 10 or newer on an ARM (or x86_64) device.</string>
+    <string name="pepe_setup_install">Install Linux</string>
+    <string name="pepe_setup_retry">Retry</string>
+    <string name="pepe_setup_cancel">Cancel</string>
+    <string name="pepe_setup_open_terminal">Open terminal</string>
+    <string name="pepe_setup_ready">Linux is ready. Swipe right on the home screen to open the terminal.</string>
+    <string name="pepe_setup_failed">Setup stopped: %1$s</string>
+    <string name="pepe_setup_stage_download">Downloading</string>
+    <string name="pepe_setup_stage_extract">Unpacking</string>
+    <string name="pepe_setup_stage_configure">Configuring</string>
+    <string name="pepe_setup_stage_update">Updating packages</string>
+    <string name="pepe_setup_stage_done">Done</string>
+
+    <!-- Background limits -->
+    <string name="pepe_phantom_title">Background limits</string>
+    <string name="pepe_phantom_button">Why Linux apps may be killed</string>
+    <string name="pepe_phantom_text">Android 12 and newer stop apps that start many background processes (the "phantom process killer"). Linux programs count as such processes, so a busy session can be killed with "signal 9".\n\nOn Android 14 and newer: Settings › System › Developer options › turn on "Disable child process restrictions".\n\nOn Android 12 and 13, from a computer with adb:\n\nadb shell "/system/bin/device_config set_sync_disabled_for_tests persistent; /system/bin/device_config put activity_manager max_phantom_processes 2147483647"\n\nAlso allow pepelauncher to run unrestricted in the battery settings.</string>
+    <string name="pepe_phantom_developer_options">Developer options</string>
+    <string name="pepe_phantom_app_settings">App settings</string>
+    <string name="pepe_ok">OK</string>
+
+    <!-- Terminal -->
+    <string name="pepe_terminal_label">Terminal</string>
+    <string name="pepe_terminal_new_session">New session</string>
+    <string name="pepe_terminal_close_session">Close session</string>
+    <string name="pepe_terminal_paste">Paste</string>
+    <string name="pepe_terminal_copy_screen">Copy screen</string>
+    <string name="pepe_terminal_open_url">Open URL…</string>
+    <string name="pepe_terminal_no_urls">No URLs on screen</string>
+    <string name="pepe_terminal_keyboard">Keyboard</string>
+    <string name="pepe_terminal_more">More</string>
+    <string name="pepe_terminal_copied">Copied</string>
+    <string name="pepe_terminal_session_failed">Could not start the shell: %1$s</string>
+</resources>

@@ -35,6 +35,7 @@ import com.rama.mako.managers.ClockManager
 import com.rama.mako.managers.HomeBackgroundManager
 import com.rama.mako.managers.PrefsManager
 import com.rama.mako.managers.PrefsManager.FileKeys
+import com.rama.mako.pepe.LinuxHooks
 import com.rama.bohio.managers.ThemeManager
 
 class MainActivity : CsActivity() {
@@ -384,6 +385,7 @@ class MainActivity : CsActivity() {
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        LinuxHooks.onHomeTouch(this, ev) // pepelauncher: swipe right opens the terminal
         return super.dispatchTouchEvent(ev)
     }
 

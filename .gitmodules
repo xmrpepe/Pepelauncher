@@ -1,3 +1,6 @@
 [submodule "bohio"]
 	path = bohio
 	url = https://github.com/rama-io/bohio.git
+[submodule "proot/third_party/proot"]
+	path = proot/third_party/proot
+	url = https://github.com/termux/proot

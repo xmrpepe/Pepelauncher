@@ -1,6 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Linux components. They run in a separate ":linux" process, so a launcher restart (mako
+    recreates its activity on theme/language changes) or crash does not kill Linux sessions,
+    and a problem in the Linux side does not take the home screen down.
+    Permissions are declared by the app's "linux" flavor manifest (app/src/linux/).
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <application />
+    <application>
+
+        <service
+            android:name=".service.LinuxService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse"
+            android:process=":linux">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Runs a user-requested Linux userland (proot): terminal sessions and Linux applications that must keep running while the user is in other apps." />
+        </service>
+
+        <activity
+            android:name=".ui.SetupActivity"
+            android:exported="false"
+            android:label="@string/pepe_setup_title"
+            android:process=":linux"
+            android:theme="@style/Theme.Rama.Base" />
+
+        <activity
+            android:name=".terminal.TerminalActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden|navigation|uiMode|density"
+            android:exported="false"
+            android:label="@string/pepe_terminal_label"
+            android:process=":linux"
+            android:resizeableActivity="true"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
+    </application>
 
 </manifest>

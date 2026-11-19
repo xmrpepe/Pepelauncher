@@ -24,6 +24,8 @@ include(":app")
 include(":bohio")
 // pepelauncher modules
 include(":linux")
+include(":proot")
+include(":terminal")
 
 // Activate For Release
 project(":bohio").projectDir = file("bohio")
