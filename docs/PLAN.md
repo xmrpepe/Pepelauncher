@@ -142,6 +142,17 @@ PRoot (GPL-2.0+), talloc (LGPL-3.0+), Wayland/libffi/xkbcommon (MIT), Apache Com
 userland. Those need a phone or a `adb`-attached device. I will mark each milestone "built" vs
 "verified on device" honestly.
 
+## Status
+
+| Step | State | Verified how |
+|---|---|---|
+| 1 Notes + plan | done | — |
+| 2 Flavors, rename, NOTICE | done | Both flavors build (debug and release). `aapt2` shows the `plain` APK has only mako's permission and no `.so` files. mako's unit tests pass in both flavors. |
+| 3 proot, setup, terminal | done (built) | proot cross-builds for 3 ABIs, 16 KB-aligned. 145 Termux tests pass. The full setup ran end to end, including `pacman -Syu`, through a **host** build of the same proot against Arch x86_64 (`HostSetupIntegrationTest`). **Not yet run on a phone.** |
+| 4 Linux section | done (built) | On the host rootfs, `pacman -S mousepad` fires the hook and the entry appears with its icon; `pacman -Rns` removes it (`HostAppsIntegrationTest`). Launcher UI **not yet run on a phone.** |
+| 5 Compositor, XWayland | **not started**: waiting on Q1 | — |
+| 6 Settings, tests, docs | done except compositor-related parts | Settings screen, `BUILDING.md`, parser and `ProotRunner` unit tests, instrumented `SetupSmokeTest` (compiles; needs a device to run). |
+
 ## 6. Open questions (answers change what gets built)
 
 - **Q1 – Extra native dependencies.** The compositor needs **libffi** (libwayland-server's
