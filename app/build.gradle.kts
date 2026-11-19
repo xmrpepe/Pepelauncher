@@ -11,11 +11,30 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.rama.mako"
+        // pepelauncher: own applicationId; namespace stays com.rama.mako (upstream code/R)
+        applicationId = "io.pepe.launcher"
         minSdk = 21
         targetSdk = 37
         versionCode = 59
         versionName = "$currentYear.$versionCode"
+    }
+
+    // pepelauncher: one flag for every Linux feature. "plain" builds exactly mako.
+    buildFeatures {
+        buildConfig = true
+    }
+    flavorDimensions += "runtime"
+    productFlavors {
+        create("linux") {
+            dimension = "runtime"
+            isDefault = true
+            buildConfigField("boolean", "LINUX_ENABLED", "true")
+        }
+        create("plain") {
+            dimension = "runtime"
+            applicationIdSuffix = ".plain"
+            buildConfigField("boolean", "LINUX_ENABLED", "false")
+        }
     }
 
     buildTypes {
@@ -88,7 +107,7 @@ androidComponents {
         variant.outputs.forEach { output ->
             output.outputFileName.set(
                 output.versionName.map { name ->
-                    "mako_${name}.apk"
+                    "pepelauncher_${name}.apk"
                 }
             )
         }
@@ -101,6 +120,7 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.4.0")
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
     implementation(project(":bohio"))
+    "linuxImplementation"(project(":linux"))
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)

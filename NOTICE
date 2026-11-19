@@ -1,0 +1,24 @@
+pepelauncher
+============
+
+pepelauncher is a fork of mako, a minimal, privacy-first Android launcher.
+
+  mako
+  Copyright (C) Pombo and the mako contributors (see docs/attributions.md)
+  https://github.com/rama-io/mako
+  Licensed under the GNU General Public License v3.0 or later (see LICENSE).
+
+  bohio (shared UI library used by mako, included as the `bohio` submodule)
+  https://github.com/rama-io/bohio
+  Distributed with mako under the same terms.
+
+pepelauncher's own changes and additions are also licensed under the GNU General
+Public License v3.0 or later. pepelauncher is not affiliated with or endorsed by
+the mako project; please report pepelauncher problems to pepelauncher, not upstream.
+
+Fonts, icons and themes inherited from mako keep their original licenses; see
+docs/attributions.md.
+
+Third-party components added by pepelauncher
+--------------------------------------------
+Each entry is added here when the component is actually included in the build.

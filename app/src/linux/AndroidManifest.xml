@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    pepelauncher "linux" flavor manifest.
+
+    mako's main manifest strips these permissions with tools:node="remove" so that no
+    dependency can sneak them in. The Linux runtime genuinely needs them, so this
+    higher-priority flavor manifest puts them back. The "plain" flavor does not have
+    this file and therefore stays exactly as network-free as mako.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Rootfs download and pacman -->
+    <uses-permission
+        android:name="android.permission.INTERNET"
+        tools:node="replace" />
+    <uses-permission
+        android:name="android.permission.ACCESS_NETWORK_STATE"
+        tools:node="replace" />
+
+    <!-- Keeps proot processes, terminal sessions and the compositor alive -->
+    <uses-permission
+        android:name="android.permission.FOREGROUND_SERVICE"
+        tools:node="replace" />
+    <uses-permission
+        android:name="android.permission.POST_NOTIFICATIONS"
+        tools:node="replace" />
+
+</manifest>

@@ -19,9 +19,11 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Mako"
+rootProject.name = "pepelauncher"
 include(":app")
 include(":bohio")
+// pepelauncher modules
+include(":linux")
 
 // Activate For Release
 project(":bohio").projectDir = file("bohio")
